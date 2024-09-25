@@ -69,7 +69,7 @@ Trivy의 구조는 다음과 같다.
 
 <br>
 
-**NGINX 취약 버전을 통한 실습**
+**[1] NGINX 취약 버전을 통한 실습**
 먼저 Trivy 설치를 진행
 
 ```bash
@@ -162,7 +162,7 @@ trivy image my-test-nginx:latest
 
 <br>
 
-**취얌점 분석 결과** 
+**취약점 분석 결과** 
 
 실제 취약점 번호를 통해 조회 해본 결과 `CVE-2022-37434` 취약점은 **zlib 버퍼 오버플로우/오버리드** 취약점으로써 zlib 라이브러리의 inflate 함수 내 inflate.c 파일에서 발생하는 힙 기반 버퍼 오버리드 또는 버퍼 오버플로우 취약점인 것을 확인하였다.
 
@@ -173,3 +173,99 @@ trivy image my-test-nginx:latest
 <div align="center">
   <img src="https://github.com/user-attachments/assets/b4794275-e03e-4a0a-8d08-277b7cef4257" width ="50%">
 </div>
+
+<br>
+
+* * *
+
+**[2] WOOSO 이미지의 취약점 찾기**
+<br>
+[1] 의 실습을 바탕으로 [WOOSO](https://github.com/DaeHyeonSon/WhiteClothesPeople.git)의 취약점을 파악해보았다. 
+
+1. WOOSO 이미지 파일 제작
+```dockerfile
+FROM gradle:7.6.1-jdk17 AS build
+
+WORKDIR /app
+
+COPY build.gradle settings.gradle ./
+
+COPY src ./src
+
+RUN gradle build --no-daemon
+
+FROM openjdk:17-jdk-slim
+
+WORKDIR /app
+
+COPY --from=build /app/build/libs/wooso-0.0.1-SNAPSHOT.jar ./wooso.jar
+
+EXPOSE 8080
+
+ENTRYPOINT ["java", "-jar", "wooso.jar"]
+
+```
+2. Trivy로 이미지 취약점 스캔<br>
+> 나온 결과값을 vulnerabilites.json 파일로 내보낸다.
+```cmd
+docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v $(pwd):/output aquasec/trivy:latest image --format json -o /output/vulnerabilities.json wooso
+
+```
+3. 결과값을 모두가 볼 수 있도록 issue 탭에 등록<br>
+> 편의상 10개만 등록되도록 설정하였다. 
+```python
+import json
+import requests
+
+with open("vulnerabilities.json", 'r') as file:
+    data = json.load(file)
+
+GITHUB_REPO = "username/repo-name"
+GITHUB_TOKEN = "token"
+
+GITHUB_API_URL = f"https://api.github.com/repos/{GITHUB_REPO}/issues"
+
+# Function to create an issue on GitHub
+def create_github_issue(title, body):
+    headers = {
+        "Authorization": f"token {GITHUB_TOKEN}",
+        "Accept": "application/vnd.github.v3+json"
+    }
+
+    issue_data = {
+        "title": title,
+        "body": body,
+        "labels": ["vulnerability"]
+    }
+
+    response = requests.post(GITHUB_API_URL, json=issue_data, headers=headers)
+
+    if response.status_code == 201:
+        print(f"Issue created: {title}")
+    else:
+        print(f"Failed to create issue: {response.content}")
+
+max_issues = 10
+issue_count = 0
+
+for result in data['Results']:
+    for vulnerability in result.get('Vulnerabilities', []):
+        if issue_count >= max_issues:
+            break
+        title = f"Vulnerability: {vulnerability.get('VulnerabilityID', 'No ID')} in {vulnerability.get('PkgName', 'Unknown Package')}"
+        description = vulnerability.get('Description', 'No description available.')
+        body = f"""
+        **Package:** {vulnerability.get('PkgName', 'Unknown Package')}
+        **Vulnerability ID:** {vulnerability.get('VulnerabilityID', 'No ID')}
+        **Description:** {description}
+        **Severity:** {vulnerability.get('Severity', 'Unknown')}
+        **Link:** {vulnerability.get('PrimaryURL', 'No link available')}
+        """
+        create_github_issue(title, body)
+        issue_count += 1 
+
+    if issue_count >= max_issues:
+        break 
+
+```
+
