@@ -1,5 +1,5 @@
 # Security-Analysis-Using-Trivy
-**Trivy**를 활용한 Docker 이미지 **취약점 분석** 
+**Trivy**를 활용한 Docker 이미지 & Git Repository **취약점 분석** 
 
 <h2 style="font-size: 25px;"> TEAM 👨‍👨‍👧 <br>
 </h2>
@@ -264,5 +264,46 @@ for result in data['Results']:
 ```
 <br>
 
+**[3] GIT Repository 취약점 진단**
+
+프로젝트로 진행한 Git Repository의 보안 취약점을 진단해보고자 한다. 
+
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/8ce48572-1487-48c2-bb6f-5c82e8059ac9" width="50%">
+</div>
+
+명령어는 간단하다.
+
+```bash
+trivy repo https://github.com/DaeHyeonSon/step04_miniProject #git 주소입력
+```
+
+진단 결과는 다음과 같다.
+
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/4452b477-c291-4b5a-9559-3dd0d6ce3f1c" width="70%">
+</div>
+
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/2468680d-b9be-4b78-8aa8-dc89cf3b107a" width="70%">
+</div>
+
+자세한 취약점 설명은 각각의 링크를 통해 확인 가능하다.
+
+- https://access.redhat.com/security/cve/cve-2020-36518
+- https://access.redhat.com/security/cve/CVE-2021-46877
+- https://access.redhat.com/security/cve/CVE-2022-42003
+- https://access.redhat.com/security/cve/CVE-2022-42004
+
+
 ### **결론** ✅<br>
 본 프로젝트에서는 **Trivy**를 활용하여 **Docker 이미지의 취약점**을 진단하고, 이를 **JSON 형식의 보고서로 작성**함으로써 보안 문제를 효율적으로 파악하고 해결할 수 있는 기반을 마련하였다. 이러한 **진단 및 보고 프로세스를 자동화하면**, 이미지 업데이트가 발생할 때마다 스캔 프로세스와 GitHub 이슈 생성을 원활하게 수행할 수 있을 것이다. 이는 **워크플로우를 최적화**하고, 발생하는 취약점에 **신속하게 대응**함으로써 애플리케이션의 보안 상태를 강화할 수 있을 것으로 사료된다.
+
+<hr>
+
+## Reference 🧷
+https://aquasecurity.github.io/trivy/v0.18.3/ <br>
+https://betterprogramming.pub/static-analysis-of-container-images-with-trivy-8d297c4f1dd3 <br>
+https://faun.pub/how-to-scan-docker-images-e08a7b909ea0
+
+*본 실습은 위 자료를 참조하여 제작하였습니다.*
