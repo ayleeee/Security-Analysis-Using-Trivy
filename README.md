@@ -64,7 +64,7 @@ Trivy는 오픈 소스 커뮤니티에서 널리 사용되며 최신 취약점 �
 <br>
 
 **[1] NGINX 취약 버전을 통한 실습** <br><br>
-먼저 Trivy 설치를 진행
+먼저 Trivy 설치를 진행한다.
 
 ```bash
 sudo apt-get update
@@ -75,7 +75,7 @@ sudo apt-get update
 sudo apt-get install -y trivy
 ```
 
-취약점이 포함된 Nginx Docker 이미지 생성
+취약점이 포함된 Nginx Docker 이미지를 생성한다.
 
 1. test 폴더 생성
 ```bash
@@ -143,7 +143,7 @@ trivy image my-test-nginx:latest
 
 <br>
 
-※ `Alpine 3.12` 리포지토리에 해당 버전이 존재하지 않아 `run`단계에서 오류가 발생 가능하다 -> 버전을 맞춰주면 해결 가능
+※ `Alpine 3.12` 리포지토리에 해당 버전이 존재하지 않아 `run`단계에서 오류가 발생 가능하다 -> 버전을 맞춰주면 해결 가능하다.
 </div>
 </details>
 
@@ -199,7 +199,7 @@ EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "wooso.jar"]
 
 ```
-2. Trivy로 이미지 취약점 스캔<br>
+2. Trivy로 이미지 취약점 스캔 후 문서화<br>
   > 나온 결과값을 vulnerabilites.json 파일로 내보낸다.
 ```cmd
 docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v $(pwd):/output aquasec/trivy:latest image --format json -o /output/vulnerabilities.json wooso
@@ -264,5 +264,5 @@ for result in data['Results']:
 ```
 <br>
 
-**결론** <br>
-본 프로젝트에서는 Trivy를 활용하여 Docker 이미지의 취약점을 진단하고, 이를 JSON 형식의 보고서로 작성함으로써 보안 문제를 효율적으로 파악하고 해결할 수 있는 기반을 마련하였다. 이러한 진단 및 보고 프로세스를 자동화하면, 이미지 업데이트가 발생할 때마다 스캔 프로세스와 GitHub 이슈 생성을 원활하게 수행할 수 있을 것이다. 이는 워크플로우를 최적화하고, 발생하는 취약점에 신속하게 대응함으로써 애플리케이션의 보안 상태를 강화할 수 있을 것으로 사료된다.
+### **결론** ✅<br>
+본 프로젝트에서는 **Trivy**를 활용하여 **Docker 이미지의 취약점**을 진단하고, 이를 **JSON 형식의 보고서로 작성**함으로써 보안 문제를 효율적으로 파악하고 해결할 수 있는 기반을 마련하였다. 이러한 **진단 및 보고 프로세스를 자동화하면**, 이미지 업데이트가 발생할 때마다 스캔 프로세스와 GitHub 이슈 생성을 원활하게 수행할 수 있을 것이다. 이는 **워크플로우를 최적화**하고, 발생하는 취약점에 **신속하게 대응**함으로써 애플리케이션의 보안 상태를 강화할 수 있을 것으로 사료된다.
