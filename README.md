@@ -301,9 +301,9 @@ trivy repo https://github.com/DaeHyeonSon/step04_miniProject #git 주소입력
 
 <hr>
 
-## Reference 🧷
+## Reference 📑
 https://aquasecurity.github.io/trivy/v0.18.3/ <br>
 https://betterprogramming.pub/static-analysis-of-container-images-with-trivy-8d297c4f1dd3 <br>
 https://faun.pub/how-to-scan-docker-images-e08a7b909ea0
 
-*본 실습은 위 자료를 참조하여 제작하였습니다.*
+본 실습은 위 자료를 참조하여 제작하였습니다.
