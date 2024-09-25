@@ -22,10 +22,10 @@ Trivy의 구조는 다음과 같다.
 ### 취약점 진단 툴 사용 이유 🙄
 
 <details>
-<summary> 왜 Trivy? </summary>
+<summary><i> 왜 Trivy?</i> </summary>
 <div markdown="1">
 
-Trivy는 다른 취약점 진단 도구들보다 대중적이며, Kubernetes까지 지원하는 넓은 확장성을 갖추고 있어 선택하게 되었다.
+Trivy는 오픈 소스 커뮤니티에서 널리 사용되며 최신 취약점 정보와 개선 사항이 신속하게 반영된다. 이러한 점에서 Trivy는 대중적인 도구라고 생각한다. 또한, Docker 이미지, 파일 시스템, Git 리포지토리 등 다양한 소스에서 취약점을 스캔할 수 있으며, Kubernetes와 같은 클라우드 네이티브 환경에 원활하게 통합되어 넓은 확장성을 갖추고 있어 선택하게 되었다.
 
 </div>
 </details>
@@ -33,7 +33,7 @@ Trivy는 다른 취약점 진단 도구들보다 대중적이며, Kubernetes까�
 
 컨테이너는 이미지를 기반으로 생성되며, 이러한 이미지에는 다양한 취약점이 존재할 수 있다. 배포 전에 이러한 취약점을 사전 발견하면 보안 사고를 예방하고, 문제를 조기에 해결하여 미래에 발생할 수 있는 큰 비용이 수반되는 보안 사고를 방지할 수 있다. 이러한 선제적 대응은 전반적인 시스템 보안을 강화하고, 운영의 안정성을 높이는 데 기여한다.
 
-### 특징
+### 특징 ⚡
 
 - <b>다양한 스캔 대상 지원</b>: 컨테이너 이미지, 파일 시스템, 코드 리포지토리, IaC 파일 등 다양한 대상을 스캔할 수 있다.
   
@@ -48,7 +48,7 @@ Trivy는 다른 취약점 진단 도구들보다 대중적이며, Kubernetes까�
 - <b>플러그인 아키텍처</b>: 필요에 따라 기능을 확장할 수 있는 플러그인 지원한다.
 
 
-### 스캔 가능 범위 
+### 스캔 가능 범위 🌐
 
 - Container 이미지
 - 파일 시스템
@@ -63,7 +63,7 @@ Trivy는 다른 취약점 진단 도구들보다 대중적이며, Kubernetes까�
 
 <br>
 
-**[1] NGINX 취약 버전을 통한 실습**
+**[1] NGINX 취약 버전을 통한 실습** <br><br>
 먼저 Trivy 설치를 진행
 
 ```bash
@@ -173,8 +173,8 @@ trivy image my-test-nginx:latest
 * * *
 
 **[2] WOOSO 이미지의 취약점 찾기**
-<br>
-[1] 의 실습을 바탕으로 [WOOSO](https://github.com/DaeHyeonSon/WhiteClothesPeople.git)의 취약점을 파악해보았다. 
+<br><br>
+앞서 진행했던 실습을 바탕으로 [WOOSO](https://github.com/DaeHyeonSon/WhiteClothesPeople.git)의 취약점을 파악해보았다. 
 
 1. WOOSO 이미지 파일 제작
 ```dockerfile
@@ -200,13 +200,13 @@ ENTRYPOINT ["java", "-jar", "wooso.jar"]
 
 ```
 2. Trivy로 이미지 취약점 스캔<br>
-> 나온 결과값을 vulnerabilites.json 파일로 내보낸다.
+  > 나온 결과값을 vulnerabilites.json 파일로 내보낸다.
 ```cmd
 docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v $(pwd):/output aquasec/trivy:latest image --format json -o /output/vulnerabilities.json wooso
 
 ```
 3. 결과값을 모두가 볼 수 있도록 issue 탭에 등록<br>
-> 편의상 10개만 등록되도록 설정하였다. 
+  > 현재는 일부만 등록되도록 설정하였다. 
 ```python
 import json
 import requests
@@ -262,4 +262,7 @@ for result in data['Results']:
         break 
 
 ```
+<br>
 
+**결론** <br>
+본 프로젝트에서는 Trivy를 활용하여 Docker 이미지의 취약점을 진단하고, 이를 JSON 형식의 보고서로 작성함으로써 보안 문제를 효율적으로 파악하고 해결할 수 있는 기반을 마련하였다. 이러한 진단 및 보고 프로세스를 자동화하면, 이미지 업데이트가 발생할 때마다 스캔 프로세스와 GitHub 이슈 생성을 원활하게 수행할 수 있을 것이다. 이는 워크플로우를 최적화하고, 발생하는 취약점에 신속하게 대응함으로써 애플리케이션의 보안 상태를 강화할 수 있을 것으로 사료된다.
